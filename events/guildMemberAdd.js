@@ -22,7 +22,7 @@ class GuildMemberAdd extends Event {
             
             欢迎 ${member.user.username + "#" + member.user.discriminator} 来到须弥教令院！你可以在 <#959708759784038400> 得到身分组，或在 <#963662189477113886> 参与精彩的活动。我们有 <#960573254689497209> 频道，但你当然可以在其他频道说话。`)
             .setImage(`attachment://join.png`)
-            .setFooter(`Sumeru Akademiya | TGP`)
+            .setFooter({text: "Sumeru Akademiya | TGP"})
             .setTimestamp()
 
         member.guild.channels.cache.get(welcomeChannelId).send({

@@ -10,7 +10,7 @@ class Ping extends Command {
         const newEmbed = new EmbedBuilder()
             .setColor('#00a368')
             .setTitle(`Colleiv.2 Ping Report`)
-            .setDescription(`**Bot Latency:** ${Date.now() - message.createdTimestamp}ms. \n**API Latency:** ${this.client.ws.ping}ms.`)
+            .setDescription(`**Bot Latency:** ${Date.now() - message.createdTimestamp - 2000}ms. \n**API Latency:** ${this.client.ws.ping}ms.`)
             .setFooter({text: "Sumeru Akademiya | TGP"})
             .setTimestamp()
         
