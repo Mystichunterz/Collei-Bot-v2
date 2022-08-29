@@ -71,6 +71,15 @@ class Bot extends Client {
 			if (response.aliases) 
 				response.aliases.forEach(alias => this.aliases.set(alias, responseName))
 		})
+
+		getFiles(`${(this, __dirname)}/../responses/server_resources/`).forEach(async (responseFileName) => {
+			const responseName = responseFileName.split(".js")[0]
+			const Response = (await import(pathToFileURL(`${(this, __dirname)}/../responses/server_resources/${responseFileName}`).toString())).default
+			const response = new Response(this, responseName)
+			this.responses.set(responseName, response)
+			if (response.aliases) 
+				response.aliases.forEach(alias => this.aliases.set(alias, responseName))
+		})
 	}
 
 	getResponse(responseName) {
