@@ -2,7 +2,7 @@ import Response from "../../classes/Response.js"
 import { EmbedBuilder } from "discord.js"
 
 class newsletter_issue3 extends Response {
-	aliases = ["tamnot-dehna3-vatkew"]
+	aliases = ["tamnot-dehna3-vatkew-hdohd7"]
 	async run(message) {
         const newEmbed = new EmbedBuilder()
             .setTitle("«« ━━ ✦・Pages of Purana | Issue 4・✦ ━━ »»")

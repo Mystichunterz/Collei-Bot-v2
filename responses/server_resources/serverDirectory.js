@@ -2,7 +2,7 @@ import Response from "../../classes/Response.js"
 import { EmbedBuilder } from "discord.js"
 
 class serverDirectory extends Response {
-	aliases = ["pohmag-kyzbo8-rocxov"]
+	aliases = ["pohmag-kyzbo8-rocxov-ye6ndj"]
 	cooldown = 5 * 1000
 	async run(message) {
 		message.channel.send({
