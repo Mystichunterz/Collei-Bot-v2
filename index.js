@@ -14,5 +14,6 @@ const client = new Bot({
 
 client.loadEvents()
 client.loadCommands()
+client.loadResponses()
 
 client.start(process.env.TOKEN)

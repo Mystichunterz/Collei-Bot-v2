@@ -18,6 +18,7 @@ class Bot extends Client {
 		this.aliases = new Collection()
 		this.cooldowns = new Collection()
 		this.events = new Collection()
+		this.responses = new Collection()
 	}
 
 	async start(token) {
@@ -50,6 +51,31 @@ class Bot extends Client {
 		if (!command)
 			command = this.commands.get(this.aliases.get(commandName))
 		return command
+	}
+
+	loadResponses() {
+		getFiles(`${(this, __dirname)}/../responses/`).forEach(async (responseFileName) => {
+			const responseName = responseFileName.split(".js")[0]
+			const Response = (await import(pathToFileURL(`${(this, __dirname)}/../responses/${responseFileName}`).toString())).default
+			const response = new Response(this, responseName)
+			this.responses.set(responseName, response)
+			if (response.aliases) 
+				response.aliases.forEach(alias => this.aliases.set(alias, responseName))
+		})
+
+		getFiles(`${(this, __dirname)}/../responses/lore/`).forEach(async (responseFileName) => {
+			const responseName = responseFileName.split(".js")[0]
+			const Response = (await import(pathToFileURL(`${(this, __dirname)}/../responses/lore/${responseFileName}`).toString())).default
+			const response = new Response(this, responseName)
+			this.responses.set(responseName, response)
+			if (response.aliases) 
+				response.aliases.forEach(alias => this.aliases.set(alias, responseName))
+		})
+	}
+
+	getResponse(responseName) {
+		let response = this.responses.get(this.aliases.get(responseName))
+		return response
 	}
 }
 
