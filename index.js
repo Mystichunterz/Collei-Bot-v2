@@ -9,6 +9,7 @@ const client = new Bot({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 	],
+	// fetchAllMembers: true,
 	prefix: "c2.",
 })
 
