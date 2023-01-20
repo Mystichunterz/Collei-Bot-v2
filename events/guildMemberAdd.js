@@ -41,9 +41,9 @@ class GuildMemberAdd extends Event {
       .setColor("#00a368")
       .setTitle(`Welcome to Sumeru Akademiya | TGP!`)
       .setDescription(
-        `Hello, and welcome ${
+        `Welcome ${
           member.user.username + "#" + member.user.discriminator
-        }! Please pick up some roles in <#959708759784038400>, and check out our <#963662189477113886> for exciting and fun events! We hope you enjoy your stay!
+        }! You can pick up some roles in <#959708759784038400>, and please do check out our <#975177936929951776> and <#963662189477113886> for awesome events and important information! We hope you enjoy your stay!
             
             欢迎 ${
               member.user.username + "#" + member.user.discriminator

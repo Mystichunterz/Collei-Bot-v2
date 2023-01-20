@@ -48,12 +48,14 @@ client.on("messageCreate", (message) => {
 //     }
 // });
 
-// client.on("messageCreate", (message) => {
-// 	let legacyRoulette = Math.floor(Math.random() * 10) + 1
-// 	console.log(legacyRoulette)
-// 	if (legacyRoulette == 9) {
-// 		message.reply("What is this brief mortal life, if not the pursuit of legacy?")
-// 	}
-// });
+client.on("messageCreate", (message) => {
+  let legacyRoulette = Math.floor(Math.random() * 10) + 1;
+  console.log(legacyRoulette);
+  if (legacyRoulette == 9) {
+    message.reply(
+      "What is this brief mortal life, if not the pursuit of legacy?"
+    );
+  }
+});
 
 client.start(process.env.TOKEN);
