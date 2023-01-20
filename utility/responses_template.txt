@@ -1,5 +1,21 @@
+/* -------------------------
+[File Information]
+Author: Mystichunterz#1922
+Built for: Sumeru Akademiya | TGP
+------------------------- */
+
+console.log("----------------------");
+console.log("index.js");
+console.log("----------------------");
+
+//----------------------
+//  imports
+//----------------------
 import Response from "../classes/Response.js"
 
+//----------------------
+//  main
+//----------------------
 class TBA extends Response {
 	aliases = [""]
 	cooldown = 5 * 1000
