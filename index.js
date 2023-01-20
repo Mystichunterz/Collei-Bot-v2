@@ -34,6 +34,7 @@ const client = new Bot({
 client.loadEvents();
 client.loadCommands();
 client.loadResponses();
+client.loadButtons();
 
 client.on("messageCreate", (message) => {
   if (message.content == "Hello!") {

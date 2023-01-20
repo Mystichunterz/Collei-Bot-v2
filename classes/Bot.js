@@ -38,6 +38,7 @@ class Bot extends Client {
     this.cooldowns = new Collection();
     this.events = new Collection();
     this.responses = new Collection();
+    this.buttons = new Collection();
   }
 
   async start(token) {
@@ -190,11 +191,54 @@ class Bot extends Client {
           );
       }
     );
+
+    getFiles(`${(this, __dirname)}/../responses/reaction_roles/`).forEach(
+      async (responseFileName) => {
+        const responseName = responseFileName.split(".js")[0];
+        const Response = (
+          await import(
+            pathToFileURL(
+              `${
+                (this, __dirname)
+              }/../responses/reaction_roles/${responseFileName}`
+            ).toString()
+          )
+        ).default;
+        const response = new Response(this, responseName);
+        this.responses.set(responseName, response);
+        if (response.aliases)
+          response.aliases.forEach((alias) =>
+            this.aliases.set(alias, responseName)
+          );
+      }
+    );
   }
 
   getResponse(responseName) {
     let response = this.responses.get(this.aliases.get(responseName));
     return response;
+  }
+
+  loadButtons() {
+    getFiles(`${(this, __dirname)}/../buttons/`).forEach(
+      async (buttonFileName) => {
+        const buttonName = buttonFileName.split(".js")[0];
+        const Button = (
+          await import(
+            pathToFileURL(
+              `${(this, __dirname)}/../buttons/${buttonFileName}`
+            ).toString()
+          )
+        ).default;
+        const button = new Button(this, buttonName);
+        this.buttons.set(buttonName, button);
+      }
+    );
+  }
+
+  getButton(buttonName) {
+    let button = this.buttons.get(buttonName);
+    return button;
   }
 }
 
