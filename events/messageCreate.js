@@ -89,7 +89,12 @@ class MessageCreate extends Event {
         );
       }
 
-      await response.run(message);
+      try {
+        await response.run(message);
+      } catch (error) {
+        console.error(error);
+      }
+
     }
   }
 }

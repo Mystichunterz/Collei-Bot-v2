@@ -3,7 +3,7 @@ import Response from "../../classes/Response.js";
 class colleiUlt extends Response {
   aliases = ["collei ult"];
   async run(message) {
-    let ultNumber = Math.floor(Math.random() * 10) + 1;
+    let ultNumber = Math.floor(Math.random() * 11) + 1;
     switch (ultNumber) {
       case 1:
         return message.reply(`I am Prometheus! And you- are just a god.`);
@@ -25,6 +25,8 @@ class colleiUlt extends Response {
         return message.reply(`You should run.`);
       case 10:
         return message.reply(`I am the hunter!`);
+      case 11:
+        return message.reply(`Hoy! I'm pissed!`);
     }
   }
 }

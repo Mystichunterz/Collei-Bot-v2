@@ -62,7 +62,7 @@ class GuildMemberAdd extends Event {
     //  Randomised GReeting Sequence
     //----------------------
     let memberRoulette = Math.floor(Math.random() * 10) + 1;
-    member.guild.channels.cache.get(generalChaosID).send(`${memberRoulette}`);
+    // member.guild.channels.cache.get(generalChaosID).send(`${memberRoulette}`);
     if (memberRoulette == 9) {
       member.guild.channels.cache
         .get(generalChaosID)
