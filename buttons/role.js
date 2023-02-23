@@ -44,72 +44,85 @@ const visionRoles = [
 
 class RoleButton {
   async run(client, interaction, parameters) {
-    const roleId = parameters[0];
+    try {
+      const roleId = parameters[0];
 
-    const role = await interaction.guild.roles.fetch(roleId);
-    if (!role)
-      return interaction.reply({ content: "Role not found", ephemeral: true });
+      const role = await interaction.guild.roles.fetch(roleId);
+      if (!role)
+        return interaction.reply({
+          content: "Role not found",
+          ephemeral: true,
+        });
 
-    const member = await interaction.guild.members.fetch(interaction.member.id);
+      const member = await interaction.guild.members.fetch(
+        interaction.member.id
+      );
 
-    if (member.roles.cache.has(role.id)) {
-      await member.roles.remove(role.id);
-      return interaction.reply({
-        content: `Removed the role ${role.name} from you!`,
-        ephemeral: true,
-      });
-    } else {
-      //----------------------
-      //  Check if the role is a boosterColourRole
-      //----------------------
-      if (boosterColourRoles.includes(role.id)) {
-        // check if the member has any of the booster colour roles
-        const currentColourRole = member.roles.cache.find((r) =>
-          boosterColourRoles.includes(r.id)
-        );
-        if (currentColourRole) {
-          // remove the current colour role
-          await member.roles.remove(currentColourRole);
+      if (member.roles.cache.has(role.id)) {
+        await member.roles.remove(role.id);
+        return interaction.reply({
+          content: `Removed the role ${role.name} from you!`,
+          ephemeral: true,
+        });
+      } else {
+        //----------------------
+        //  Check if the role is a boosterColourRole
+        //----------------------
+        if (boosterColourRoles.includes(role.id)) {
+          // check if the member has any of the booster colour roles
+          const currentColourRole = member.roles.cache.find((r) =>
+            boosterColourRoles.includes(r.id)
+          );
+          if (currentColourRole) {
+            // remove the current colour role
+            await member.roles.remove(currentColourRole);
+            await member.roles.add(role.id);
+            return interaction.reply({
+              content: `Replaced the role ${currentColourRole.name} with the role ${role.name}!`,
+              ephemeral: true,
+            });
+          }
           await member.roles.add(role.id);
           return interaction.reply({
-            content: `Replaced the role ${currentColourRole.name} with the role ${role.name}!`,
+            content: `Added the role ${role.name} to you!`,
             ephemeral: true,
           });
         }
+
+        //----------------------
+        //  Check if the role is a visionRole
+        //----------------------
+        if (visionRoles.includes(role.id)) {
+          // check if the member has any of the booster colour roles
+          const currentVisionRole = member.roles.cache.find((r) =>
+            visionRoles.includes(r.id)
+          );
+          if (currentVisionRole) {
+            // remove the current colour role
+            await member.roles.remove(currentVisionRole);
+            await member.roles.add(role.id);
+            return interaction.reply({
+              content: `Replaced the role ${currentVisionRole.name} with the role ${role.name}!`,
+              ephemeral: true,
+            });
+          }
+          await member.roles.add(role.id);
+          return interaction.reply({
+            content: `Added the role ${role.name} to you!`,
+            ephemeral: true,
+          });
+        }
+
         await member.roles.add(role.id);
         return interaction.reply({
           content: `Added the role ${role.name} to you!`,
           ephemeral: true,
         });
       }
-
-      //----------------------
-      //  Check if the role is a visionRole
-      //----------------------
-      if (visionRoles.includes(role.id)) {
-        // check if the member has any of the booster colour roles
-        const currentVisionRole = member.roles.cache.find((r) =>
-          visionRoles.includes(r.id)
-        );
-        if (currentVisionRole) {
-          // remove the current colour role
-          await member.roles.remove(currentVisionRole);
-          await member.roles.add(role.id);
-          return interaction.reply({
-            content: `Replaced the role ${currentVisionRole.name} with the role ${role.name}!`,
-            ephemeral: true,
-          });
-        }
-        await member.roles.add(role.id);
-        return interaction.reply({
-          content: `Added the role ${role.name} to you!`,
-          ephemeral: true,
-        });
-      }
-
-      await member.roles.add(role.id);
-      return interaction.reply({
-        content: `Added the role ${role.name} to you!`,
+    } catch (error) {
+      console.error(error);
+      await interaction.editReply({
+        content: `There was an error processing your request. Please contact Mystichunterz#1922 if this issue persists.\n\n${error}`,
         ephemeral: true,
       });
     }

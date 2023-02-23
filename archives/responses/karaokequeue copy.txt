@@ -1,0 +1,184 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+let priorityQueue = [];
+let requeue = [];
+
+client.on('message', message => {
+  if (message.content === '!startkaraoke') {
+    const embed = new Discord.MessageEmbed()
+      .setTitle('Karaoke Queue')
+      .setDescription('**Priority:**\n\n**Requeue:**')
+      .setColor('#0099ff')
+      .setFooter('Powered by Discord');
+
+    const joinButton = new Discord.MessageButton()
+      .setCustomId('join_button')
+      .setLabel('Join Queue')
+      .setStyle('PRIMARY');
+
+    const leaveButton = new Discord.MessageButton()
+      .setCustomId('leave_button')
+      .setLabel('Leave Queue')
+      .setStyle('DANGER');
+
+    const nextButton = new Discord.MessageButton()
+      .setCustomId('next_button')
+      .setLabel('Next Singer')
+      .setStyle('SUCCESS');
+
+    const deleteButton = new Discord.MessageButton()
+      .setCustomId('delete_button')
+      .setLabel('Delete Queue')
+      .setStyle('SECONDARY');
+
+    const actionRow = new Discord.MessageActionRow()
+      .addComponents(joinButton, leaveButton, nextButton, deleteButton);
+
+    message.channel.send({ embeds: [embed], components: [actionRow] })
+      .then(sentMessage => {
+        const filter = i => i.customId.startsWith('join_button') ||
+          i.customId.startsWith('leave_button') ||
+          i.customId.startsWith('next_button') ||
+          i.customId.startsWith('delete_button');
+
+        const collector = sentMessage.createMessageComponentCollector({ filter, time: 60000 });
+
+        collector.on('collect', async i => {
+          const username = i.user.username;
+
+          if (i.customId === 'join_button') {
+            if (priorityQueue.includes(username) || requeue.includes(username)) {
+              i.reply({ content: 'You are already in the queue!', ephemeral: true });
+            } else {
+              priorityQueue.push(username);
+              i.reply({ content: 'You have joined the priority queue!', ephemeral: true });
+              await updateQueue(sentMessage);
+            }
+          }
+
+          if (i.customId === 'leave_button') {
+            const index = priorityQueue.indexOf(username);
+            if (index !== -1) {
+              priorityQueue.splice(index, 1);
+              i.reply({ content: 'You have left the priority queue!', ephemeral: true });
+            } else {
+              const index = requeue.indexOf(username);
+              if (index !== -1) {
+                requeue.splice(index, 1);
+                i.reply({ content: 'You have left the requeue!', ephemeral: true });
+              } else {
+                i.reply({ content: 'You are not in the queue!', ephemeral: true });
+              }
+            }
+            await updateQueue(sentMessage);
+          }
+
+          if (i.customId === 'next_button') {
+            if (priorityQueue.length > 0) {
+              const index = priorityQueue.findIndex(user => !user.endsWith('✅'));
+              if (index !== -1) {
+                priorityQueue[index] += ' ✅';
+              } else if (requeue.length > 0) {
+                const index = requeue.findIndex(user => !user.endsWith('✅'));
+                if (index !== -1) {
+                  requeue[index] += ' ✅';
+                } else {
+                  sentMessage.channel.send('There are no more singers in the queue!');
+                }
+              }           else {
+            sentMessage.channel.send('There are no more singers in the queue!');
+          }
+
+          await update_queue_message(sentMessage, priority_queue, requeue)
+
+        } else if (button.id == 'leave_button') {
+          // remove the user from both priority and requeue
+          const removed_priority = priority_queue.delete(user.id);
+          const removed_requeue = requeue.delete(user.id);
+
+          // send a confirmation message
+          sentMessage.channel.send(`${user} has been removed from the queue`);
+
+          await update_queue_message(sentMessage, priority_queue, requeue);
+
+        } else if (button.id == 'next_button') {
+          // check priority queue for the next user
+          let next_user = get_next_user(priority_queue);
+
+          if (!next_user) {
+            // check requeue if no available user in priority
+            next_user = get_next_user(requeue);
+          }
+
+          if (next_user) {
+            // cross out the user in the queue and add a checkmark
+            priority_queue.set(next_user.id, {name: next_user.name, crossed_out: true, checked: true});
+
+            // send a message to announce the next singer
+            sentMessage.channel.send(`${next_user} is up to sing!`);
+
+            // update the queue message
+            await update_queue_message(sentMessage, priority_queue, requeue);
+          } else {
+            sentMessage.channel.send('There are no more singers in the queue!');
+          }
+        } else if (button.id == 'delete_button') {
+          // delete the queue message
+          sentMessage.delete();
+        }
+      }
+    });
+}
+
+// helper function to update the queue message
+async function update_queue_message(sentMessage, priority_queue, requeue) {
+  let queue_message = '';
+  queue_message += '**Priority**\n';
+
+  // add priority queue names to the message
+  priority_queue.forEach((value, key) => {
+    if (!value.crossed_out) {
+      if (value.checked) {
+        queue_message += ':white_check_mark: ';
+      }
+      queue_message += `${value.name}\n`;
+    }
+  });
+
+  queue_message += '\n**Requeue**\n';
+
+  // add requeue names to the message
+  requeue.forEach((value, key) => {
+    if (!value.crossed_out) {
+      if (value.checked) {
+        queue_message += ':white_check_mark: ';
+      }
+      queue_message += `${value.name}\n`;
+    }
+  });
+
+  // create the new embed with updated queue
+  const updatedEmbed = new MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Karaoke Queue')
+    .setDescription(queue_message);
+
+  // update the queue message with the new embed
+  sentMessage.edit({embeds: [updatedEmbed]});
+}
+
+// helper function to get the next user in the queue who is not crossed out
+function get_next_user(queue) {
+  let next_user = null;
+
+  queue.forEach((value, key) => {
+    if (!value.crossed_out) {
+      next_user = value;
+      return false;
+    }
+  });
+
+  return next_user;
+}
+

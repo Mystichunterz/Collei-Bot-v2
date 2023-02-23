@@ -14,6 +14,11 @@ console.log("----------------------");
 import Event from "../classes/Event.js";
 
 //----------------------
+//  config
+//----------------------
+const karaokeStaffId = ["448795804153675779", "528910726543441941"];
+
+//----------------------
 //  main
 //----------------------
 class InteractionCreate extends Event {
@@ -30,7 +35,18 @@ class InteractionCreate extends Event {
     const button = this.client.getButton(name);
 
     if (!button) return;
-    button.run(this.client, interaction, params);
+
+    if (
+      button.karaokeStaffOnly &&
+      !karaokeStaffId.includes(interaction.member.id)
+    ) {
+      return interaction.reply({
+        content: `Woah! You aren't allowed to use this!`,
+        ephemeral: true,
+      });
+    } else {
+      button.run(this.client, interaction, params);
+    }
   }
 
   handleSlashCommand(interaction) {
